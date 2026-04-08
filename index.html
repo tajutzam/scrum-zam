@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Diana's Scrum</title>
+<title>zam's Scrum</title>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -17,6 +17,7 @@
     --ink3: #A8A29C;
     --accent: #C84B2F;
     --accent-light: #F5E8E4;
+    --green: #6BB37A;
     --border: rgba(26,23,20,0.12);
     --border2: rgba(26,23,20,0.06);
     --mono: 'DM Mono', monospace;
@@ -53,7 +54,6 @@
   .main { padding: 40px 48px; min-height: 100vh; }
   .panel { display: none; }
   .panel.active { display: block; animation: fadeUp 0.2s ease; }
-
   @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
   .panel-title { font-family: var(--serif); font-size: 32px; font-style: italic; color: var(--ink); margin-bottom: 6px; line-height: 1.2; }
@@ -74,11 +74,13 @@
   .btn:active { transform: scale(0.97); }
   .btn-accent { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 500; }
   .btn-accent:hover { background: #B03E24; border-color: #B03E24; color: #fff; }
+  .btn-green { background: var(--green); border-color: var(--green); color: #fff; font-weight: 500; }
+  .btn-green:hover { background: #58a168; border-color: #58a168; color: #fff; }
 
   .divider { border: none; border-top: 1px solid var(--border2); margin: 28px 0; }
   .save-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
   .autosave { font-size: 11px; color: var(--ink3); letter-spacing: 0.04em; display: flex; align-items: center; gap: 6px; }
-  .dot { width: 6px; height: 6px; border-radius: 50%; background: #6BB37A; animation: pulse 2s infinite; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
   /* VIEW TOGGLE */
@@ -89,6 +91,7 @@
   /* HISTORY CARDS */
   .history-empty { text-align: center; padding: 60px 0; color: var(--ink3); font-size: 13px; }
   .history-grid { display: flex; flex-direction: column; gap: 16px; }
+
   .history-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: box-shadow 0.2s; }
   .history-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
   .hcard-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--border2); background: var(--surface2); flex-wrap: wrap; gap: 8px; }
@@ -99,25 +102,45 @@
   .hcard-section-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink3); margin-bottom: 8px; }
   .hcard-content { font-size: 12px; line-height: 1.7; color: var(--ink2); white-space: pre-wrap; }
 
+  /* EDIT MODE inside card */
+  .hcard-edit { padding: 16px 18px; display: none; flex-direction: column; gap: 14px; border-top: 1px solid var(--border2); background: var(--surface); }
+  .hcard-edit.open { display: flex; }
+  .hcard-edit-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink3); margin-bottom: 6px; }
+  .hcard-edit textarea { min-height: 80px; font-size: 12px; }
+  .hcard-edit-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 4px; }
+
   /* HISTORY TABLE */
   .tbl-wrap { width: 100%; overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
-
-  .hist-table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 600px; }
+  .hist-table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 620px; }
   .hist-table thead tr { background: var(--surface2); border-bottom: 1px solid var(--border); }
   .hist-table th { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink3); font-weight: 500; padding: 11px 14px; text-align: left; }
   .hist-table th:last-child { text-align: right; }
-  .hist-table td { padding: 13px 14px; vertical-align: top; border-bottom: 1px solid var(--border2); color: var(--ink2); line-height: 1.65; white-space: pre-wrap; word-break: break-word; }
+  .hist-table td { padding: 13px 14px; vertical-align: top; border-bottom: 1px solid var(--border2); color: var(--ink2); line-height: 1.65; word-break: break-word; }
   .hist-table tr:last-child td { border-bottom: none; }
-  .hist-table tbody tr { transition: background 0.1s; }
-  .hist-table tbody tr:hover { background: var(--surface2); }
+  .hist-table tbody tr.view-row { transition: background 0.1s; }
+  .hist-table tbody tr.view-row:hover { background: var(--surface2); }
   .td-date { white-space: nowrap; min-width: 110px; }
   .td-day { font-family: var(--serif); font-style: italic; font-size: 13px; display: block; color: var(--ink); }
   .td-datenum { font-size: 11px; color: var(--ink3); margin-top: 2px; display: block; }
-  .td-actions { white-space: nowrap; text-align: right; min-width: 160px; }
+  .td-content { white-space: pre-wrap; }
+  .td-actions { white-space: nowrap; text-align: right; min-width: 180px; }
+
+  /* TABLE EDIT ROW */
+  .edit-row { display: none; background: var(--surface2); }
+  .edit-row.open { display: table-row; }
+  .edit-row td { padding: 0; border-bottom: 1px solid var(--border); }
+  .edit-row-inner { padding: 16px 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .edit-row-inner label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink3); display: block; margin-bottom: 6px; }
+  .edit-row-inner textarea { min-height: 80px; font-size: 12px; }
+  .edit-row-actions { padding: 0 14px 14px; display: flex; gap: 8px; justify-content: flex-end; }
 
   .btn-sm { font-family: var(--mono); font-size: 10px; letter-spacing: 0.05em; padding: 4px 10px; border-radius: 4px; border: 1px solid var(--border); background: var(--surface); color: var(--ink3); cursor: pointer; transition: all 0.15s; }
   .btn-sm + .btn-sm { margin-left: 4px; }
   .btn-sm:hover { border-color: var(--ink3); color: var(--ink); }
+  .btn-sm-edit { color: var(--ink2); }
+  .btn-sm-edit:hover { border-color: var(--ink); color: var(--ink); background: var(--surface2); }
+  .btn-sm-save { background: var(--green); border-color: var(--green); color: #fff; }
+  .btn-sm-save:hover { background: #58a168; border-color: #58a168; color: #fff; }
   .btn-danger:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
 
   /* TOAST */
@@ -132,6 +155,7 @@
     .sidebar-date { display: none; }
     .main { padding: 24px 20px; }
     .hcard-body { grid-template-columns: 1fr; }
+    .edit-row-inner { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -140,29 +164,19 @@
 <div class="layout">
   <aside class="sidebar">
     <div class="brand">
-      <div class="brand-name">Diana's<br>Scrum</div>
+      <div class="brand-name">zam's<br>Scrum</div>
       <div class="brand-sub">Daily standup</div>
     </div>
-
     <nav class="nav">
       <button class="nav-item active" onclick="switchTab('today')">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="2" y="2" width="5" height="5" rx="1" fill="currentColor"/>
-          <rect x="9" y="2" width="5" height="5" rx="1" fill="currentColor" opacity="0.4"/>
-          <rect x="2" y="9" width="5" height="5" rx="1" fill="currentColor" opacity="0.4"/>
-          <rect x="9" y="9" width="5" height="5" rx="1" fill="currentColor" opacity="0.4"/>
-        </svg>
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5" height="5" rx="1" fill="currentColor"/><rect x="9" y="2" width="5" height="5" rx="1" fill="currentColor" opacity="0.4"/><rect x="2" y="9" width="5" height="5" rx="1" fill="currentColor" opacity="0.4"/><rect x="9" y="9" width="5" height="5" rx="1" fill="currentColor" opacity="0.4"/></svg>
         Hari ini
       </button>
       <button class="nav-item" onclick="switchTab('history')">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/>
-          <path d="M8 5v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
         History
       </button>
     </nav>
-
     <div class="sidebar-date">
       <div class="date-day" id="sidebarDay"></div>
       <div class="date-rest" id="sidebarRest"></div>
@@ -173,7 +187,7 @@
 
     <!-- TODAY PANEL -->
     <div class="panel active" id="panel-today">
-      <div class="panel-title">Standup Diana</div>
+      <div class="panel-title">Standup zam</div>
       <div class="panel-subtitle" id="fullDate"></div>
 
       <div class="field-block">
@@ -195,12 +209,8 @@
       </div>
 
       <hr class="divider">
-
       <div class="save-row">
-        <div class="autosave">
-          <div class="dot"></div>
-          <span id="saveNote">Autosave aktif</span>
-        </div>
+        <div class="autosave"><div class="dot"></div><span id="saveNote">Autosave aktif</span></div>
         <button class="btn btn-accent" onclick="saveToHistory()">Simpan ke history</button>
       </div>
     </div>
@@ -228,7 +238,6 @@
 <script>
   const yesterdayEl = document.getElementById('yesterday');
   const todayEl = document.getElementById('today');
-
   const now = new Date();
   const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
   const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
@@ -238,12 +247,12 @@
   document.getElementById('sidebarRest').textContent = days[now.getDay()] + ' · ' + months[now.getMonth()] + ' ' + now.getFullYear();
   document.getElementById('fullDate').textContent = days[now.getDay()] + ', ' + now.getDate() + ' ' + monthsFull[now.getMonth()] + ' ' + now.getFullYear();
 
-  yesterdayEl.value = localStorage.getItem('diana_yesterday') || '';
-  todayEl.value = localStorage.getItem('diana_today') || '';
+  yesterdayEl.value = localStorage.getItem('zam_yesterday') || '';
+  todayEl.value = localStorage.getItem('zam_today') || '';
 
   function autoSave() {
-    localStorage.setItem('diana_yesterday', yesterdayEl.value);
-    localStorage.setItem('diana_today', todayEl.value);
+    localStorage.setItem('zam_yesterday', yesterdayEl.value);
+    localStorage.setItem('zam_today', todayEl.value);
     const t = new Date();
     document.getElementById('saveNote').textContent = 'Disimpan ' + String(t.getHours()).padStart(2,'0') + ':' + String(t.getMinutes()).padStart(2,'0');
   }
@@ -264,25 +273,42 @@
   function getDateKey() { return now.toISOString().slice(0,10); }
   function getDateStr() { return days[now.getDay()] + ', ' + now.getDate() + ' ' + monthsFull[now.getMonth()] + ' ' + now.getFullYear(); }
 
+  function getHist() { return JSON.parse(localStorage.getItem('zam_history') || '[]'); }
+  function saveHist(h) { localStorage.setItem('zam_history', JSON.stringify(h)); }
+
   function saveToHistory() {
     const y = yesterdayEl.value.trim();
     const t = todayEl.value.trim();
     if (!y && !t) { showToast('Belum ada yang diisi!'); return; }
-    const KEY = 'diana_history';
-    const hist = JSON.parse(localStorage.getItem(KEY) || '[]');
+    const hist = getHist();
     const dateKey = getDateKey();
     const idx = hist.findIndex(h => h.date === dateKey);
     const entry = { date: dateKey, dateStr: getDateStr(), yesterday: y, today: t };
     if (idx >= 0) hist[idx] = entry; else hist.unshift(entry);
     hist.splice(60);
-    localStorage.setItem(KEY, JSON.stringify(hist));
+    saveHist(hist);
     showToast('Tersimpan ke history!');
   }
 
+  // ── EDIT FUNCTIONS ──────────────────────────────────
+  function saveEdit(dateKey, newY, newT) {
+    const hist = getHist();
+    const idx = hist.findIndex(h => h.date === dateKey);
+    if (idx < 0) return;
+    hist[idx].yesterday = newY.trim();
+    hist[idx].today = newT.trim();
+    saveHist(hist);
+    showToast('Perubahan disimpan!');
+    loadHistory();
+  }
+
+  // ── VIEW ─────────────────────────────────────────────
   let currentView = 'card';
+  let openEditKey = null;
 
   function setView(v) {
     currentView = v;
+    openEditKey = null;
     document.getElementById('viewBtnCard').classList.toggle('active', v === 'card');
     document.getElementById('viewBtnTable').classList.toggle('active', v === 'table');
     loadHistory();
@@ -290,7 +316,7 @@
 
   function loadHistory() {
     const container = document.getElementById('historyContainer');
-    const hist = JSON.parse(localStorage.getItem('diana_history') || '[]');
+    const hist = getHist();
     if (!hist.length) {
       container.innerHTML = '<div class="history-empty">Belum ada history.<br>Simpan dari tab "Hari ini" dulu ya.</div>';
       return;
@@ -301,31 +327,65 @@
 
   function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
+  // ── CARD VIEW ────────────────────────────────────────
   function renderCards(container, hist) {
     container.innerHTML = '<div class="history-grid">' + hist.map(h => {
-      const yFmt = h.yesterday ? escHtml(fmtLines(h.yesterday,'*')) : '';
-      const tFmt = h.today ? escHtml(fmtLines(h.today,'*')) : '';
+      const yFmt = h.yesterday ? escHtml(fmtLines(h.yesterday,'*')) : '<span style="color:var(--ink3)">—</span>';
+      const tFmt = h.today ? escHtml(fmtLines(h.today,'*')) : '<span style="color:var(--ink3)">—</span>';
       const parts = h.dateStr.split(',');
-      return `<div class="history-card">
+      const isEditing = openEditKey === h.date;
+      return `<div class="history-card" id="card-${h.date}">
         <div class="hcard-head">
           <div>
             <span class="hcard-day">${parts[0]}</span>
-            <span class="hcard-date">${(parts[1]||'')}</span>
+            <span class="hcard-date">${parts[1]||''}</span>
           </div>
           <div class="hcard-actions">
+            <button class="btn-sm btn-sm-edit" onclick="toggleCardEdit('${h.date}')" id="editbtn-${h.date}">${isEditing ? 'Batal' : 'Edit'}</button>
             <button class="btn-sm" onclick="copyEntry('${h.date}','*')">Copy *</button>
             <button class="btn-sm" onclick="copyEntry('${h.date}','-')">Copy -</button>
             <button class="btn-sm btn-danger" onclick="deleteEntry('${h.date}')">Hapus</button>
           </div>
         </div>
-        <div class="hcard-body">
-          ${h.yesterday ? `<div><div class="hcard-section-label">Kemarin</div><div class="hcard-content">${yFmt}</div></div>` : '<div></div>'}
-          ${h.today ? `<div><div class="hcard-section-label">Hari itu</div><div class="hcard-content">${tFmt}</div></div>` : '<div></div>'}
+        <div class="hcard-body" id="cardbody-${h.date}" style="${isEditing ? 'display:none' : ''}">
+          <div><div class="hcard-section-label">Kemarin</div><div class="hcard-content">${yFmt}</div></div>
+          <div><div class="hcard-section-label">Hari itu</div><div class="hcard-content">${tFmt}</div></div>
+        </div>
+        <div class="hcard-edit ${isEditing ? 'open' : ''}" id="cardedit-${h.date}">
+          <div>
+            <div class="hcard-edit-label">Kemarin</div>
+            <textarea id="editY-${h.date}" placeholder="Kemarin ngapain...">${escHtml(h.yesterday||'')}</textarea>
+          </div>
+          <div>
+            <div class="hcard-edit-label">Hari itu</div>
+            <textarea id="editT-${h.date}" placeholder="Hari itu ngapain...">${escHtml(h.today||'')}</textarea>
+          </div>
+          <div class="hcard-edit-actions">
+            <button class="btn btn-green" style="font-size:11px;padding:6px 14px" onclick="submitCardEdit('${h.date}')">Simpan perubahan</button>
+            <button class="btn" style="font-size:11px;padding:6px 14px" onclick="toggleCardEdit('${h.date}')">Batal</button>
+          </div>
         </div>
       </div>`;
     }).join('') + '</div>';
   }
 
+  function toggleCardEdit(dateKey) {
+    if (openEditKey === dateKey) {
+      openEditKey = null;
+    } else {
+      openEditKey = dateKey;
+    }
+    loadHistory();
+  }
+
+  function submitCardEdit(dateKey) {
+    const newY = document.getElementById('editY-' + dateKey).value;
+    const newT = document.getElementById('editT-' + dateKey).value;
+    openEditKey = null;
+    saveEdit(dateKey, newY, newT);
+  }
+
+  // ── TABLE VIEW ───────────────────────────────────────
   function renderTable(container, hist) {
     const rows = hist.map(h => {
       const parts = h.dateStr.split(',');
@@ -333,19 +393,43 @@
       const datePart = (parts[1] || '').trim();
       const yFmt = h.yesterday ? escHtml(fmtLines(h.yesterday,'*')) : '<span style="color:var(--ink3)">—</span>';
       const tFmt = h.today ? escHtml(fmtLines(h.today,'*')) : '<span style="color:var(--ink3)">—</span>';
-      return `<tr>
+      const isEditing = openEditKey === h.date;
+
+      const viewRow = `<tr class="view-row" id="viewrow-${h.date}">
         <td class="td-date">
           <span class="td-day">${dayPart}</span>
           <span class="td-datenum">${datePart}</span>
         </td>
-        <td>${yFmt}</td>
-        <td>${tFmt}</td>
+        <td class="td-content">${yFmt}</td>
+        <td class="td-content">${tFmt}</td>
         <td class="td-actions">
+          <button class="btn-sm btn-sm-edit" onclick="toggleTableEdit('${h.date}')">${isEditing ? 'Batal' : 'Edit'}</button>
           <button class="btn-sm" onclick="copyEntry('${h.date}','*')">Copy *</button>
           <button class="btn-sm" onclick="copyEntry('${h.date}','-')">Copy -</button>
           <button class="btn-sm btn-danger" onclick="deleteEntry('${h.date}')">Hapus</button>
         </td>
       </tr>`;
+
+      const editRow = `<tr class="edit-row ${isEditing ? 'open' : ''}" id="editrow-${h.date}">
+        <td colspan="4">
+          <div class="edit-row-inner">
+            <div>
+              <label>Kemarin</label>
+              <textarea id="tblEditY-${h.date}" placeholder="Kemarin ngapain...">${escHtml(h.yesterday||'')}</textarea>
+            </div>
+            <div>
+              <label>Hari itu</label>
+              <textarea id="tblEditT-${h.date}" placeholder="Hari itu ngapain...">${escHtml(h.today||'')}</textarea>
+            </div>
+          </div>
+          <div class="edit-row-actions">
+            <button class="btn-sm btn-sm-save" onclick="submitTableEdit('${h.date}')">Simpan perubahan</button>
+            <button class="btn-sm" onclick="toggleTableEdit('${h.date}')">Batal</button>
+          </div>
+        </td>
+      </tr>`;
+
+      return viewRow + editRow;
     }).join('');
 
     container.innerHTML = `<div class="tbl-wrap">
@@ -363,16 +447,31 @@
     </div>`;
   }
 
+  function toggleTableEdit(dateKey) {
+    openEditKey = openEditKey === dateKey ? null : dateKey;
+    loadHistory();
+  }
+
+  function submitTableEdit(dateKey) {
+    const newY = document.getElementById('tblEditY-' + dateKey).value;
+    const newT = document.getElementById('tblEditT-' + dateKey).value;
+    openEditKey = null;
+    saveEdit(dateKey, newY, newT);
+  }
+
+  // ── SHARED ───────────────────────────────────────────
   function deleteEntry(dateKey) {
-    let hist = JSON.parse(localStorage.getItem('diana_history') || '[]');
+    if (!confirm('Hapus entry ini?')) return;
+    let hist = getHist();
     hist = hist.filter(h => h.date !== dateKey);
-    localStorage.setItem('diana_history', JSON.stringify(hist));
+    saveHist(hist);
+    if (openEditKey === dateKey) openEditKey = null;
     loadHistory();
     showToast('Entry dihapus');
   }
 
   function copyEntry(dateKey, prefix) {
-    const hist = JSON.parse(localStorage.getItem('diana_history') || '[]');
+    const hist = getHist();
     const h = hist.find(e => e.date === dateKey);
     if (!h) return;
     let out = h.dateStr + '\n\n';
@@ -385,7 +484,7 @@
     document.querySelectorAll('.nav-item').forEach((el,i) => el.classList.toggle('active', ['today','history'][i] === tab));
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.getElementById('panel-' + tab).classList.add('active');
-    if (tab === 'history') loadHistory();
+    if (tab === 'history') { openEditKey = null; loadHistory(); }
   }
 
   function showToast(msg) {
