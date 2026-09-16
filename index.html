@@ -17,7 +17,8 @@
     --ink3: #A8A29C;
     --accent: #C84B2F;
     --accent-light: #F5E8E4;
-    --green: #6BB37A;
+    --green: #4E9A60;
+    --green-light: #EBF5EE;
     --border: rgba(26,23,20,0.12);
     --border2: rgba(26,23,20,0.06);
     --mono: 'DM Mono', monospace;
@@ -60,14 +61,50 @@
   .panel-subtitle { font-size: 11px; color: var(--ink3); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 36px; }
 
   .field-block { margin-bottom: 28px; }
-  .field-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink3); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
-  .field-label::after { content: ''; flex: 1; height: 1px; background: var(--border2); }
+  .field-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .field-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink3); display: flex; align-items: center; gap: 8px; flex: 1; }
+  .field-label::after { content: ''; flex: 1; height: 1px; background: var(--border2); margin-right: 12px; }
+  .field-progress { font-size: 10px; color: var(--ink3); letter-spacing: 0.05em; background: var(--surface2); padding: 2px 8px; border-radius: 12px; border: 1px solid var(--border2); }
+  .field-progress.all-done { background: var(--green-light); color: var(--green); border-color: rgba(78,154,96,0.3); font-weight: 500; }
 
-  textarea { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; font-family: var(--mono); font-size: 13px; color: var(--ink); resize: vertical; min-height: 110px; line-height: 1.7; transition: border-color 0.15s; }
-  textarea::placeholder { color: var(--ink3); }
-  textarea:focus { outline: none; border-color: var(--ink); }
+  /* TODO CONTAINER */
+  .todo-container { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .todo-list { list-style: none; display: flex; flex-direction: column; }
+  .todo-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--border2); transition: background 0.15s; position: relative; }
+  .todo-item:last-child { border-bottom: none; }
+  .todo-item:hover { background: rgba(240,237,229,0.4); }
+  .todo-item.done .todo-text { text-decoration: line-through; color: var(--ink3); }
+  
+  .todo-checkbox-wrapper { display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+  .todo-check { width: 18px; height: 18px; border-radius: 4px; border: 1.5px solid var(--ink3); background: transparent; display: flex; align-items: center; justify-content: center; transition: all 0.15s; cursor: pointer; }
+  .todo-item.done .todo-check { background: var(--green); border-color: var(--green); color: #fff; }
+  .todo-check svg { width: 12px; height: 12px; opacity: 0; transform: scale(0.5); transition: all 0.15s; }
+  .todo-item.done .todo-check svg { opacity: 1; transform: scale(1); }
 
-  .copy-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .todo-text { flex: 1; font-size: 13px; color: var(--ink); line-height: 1.5; outline: none; border-radius: 3px; padding: 2px 4px; transition: background 0.15s; }
+  .todo-text:focus { background: var(--surface2); }
+  .todo-text[contenteditable="true"] { cursor: text; }
+
+  .todo-del-btn { background: none; border: none; color: var(--ink3); cursor: pointer; opacity: 0; padding: 4px; border-radius: 4px; transition: all 0.15s; display: flex; align-items: center; justify-content: center; }
+  .todo-item:hover .todo-del-btn { opacity: 0.7; }
+  .todo-del-btn:hover { opacity: 1 !important; color: var(--accent); background: var(--accent-light); }
+
+  .todo-empty-state { padding: 18px 14px; font-size: 12px; color: var(--ink3); text-align: center; font-style: italic; }
+
+  .todo-input-row { display: flex; gap: 8px; padding: 8px 12px; background: var(--surface2); border-top: 1px solid var(--border2); align-items: center; }
+  .todo-input { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; font-family: var(--mono); font-size: 12px; color: var(--ink); outline: none; transition: border-color 0.15s; }
+  .todo-input:focus { border-color: var(--ink); }
+  .todo-input::placeholder { color: var(--ink3); }
+
+  .copy-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; align-items: center; }
+  .bulk-toggle-btn { margin-left: auto; font-size: 10px; color: var(--ink3); text-decoration: underline; cursor: pointer; background: none; border: none; font-family: var(--mono); }
+  .bulk-toggle-btn:hover { color: var(--ink); }
+
+  /* BULK MODAL / BOX */
+  .bulk-box { display: none; margin-top: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+  .bulk-box.open { display: block; }
+  .bulk-textarea { width: 100%; min-height: 90px; border: 1px solid var(--border); border-radius: 6px; padding: 10px; font-family: var(--mono); font-size: 12px; color: var(--ink); resize: vertical; margin-bottom: 8px; }
+  .bulk-textarea:focus { outline: none; border-color: var(--ink); }
 
   .btn { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; padding: 7px 14px; border-radius: 5px; border: 1px solid var(--border); background: var(--surface); color: var(--ink2); cursor: pointer; transition: all 0.15s; }
   .btn:hover { border-color: var(--ink2); color: var(--ink); background: var(--surface2); }
@@ -75,7 +112,7 @@
   .btn-accent { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 500; }
   .btn-accent:hover { background: #B03E24; border-color: #B03E24; color: #fff; }
   .btn-green { background: var(--green); border-color: var(--green); color: #fff; font-weight: 500; }
-  .btn-green:hover { background: #58a168; border-color: #58a168; color: #fff; }
+  .btn-green:hover { background: #438753; border-color: #438753; color: #fff; }
 
   .divider { border: none; border-top: 1px solid var(--border2); margin: 28px 0; }
   .save-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
@@ -99,8 +136,14 @@
   .hcard-day { font-family: var(--serif); font-size: 15px; font-style: italic; color: var(--ink); margin-right: 8px; }
   .hcard-actions { display: flex; gap: 6px; flex-wrap: wrap; }
   .hcard-body { padding: 16px 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .hcard-section-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink3); margin-bottom: 8px; }
-  .hcard-content { font-size: 12px; line-height: 1.7; color: var(--ink2); white-space: pre-wrap; }
+  .hcard-section-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink3); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
+  
+  .hist-todo-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .hist-todo-item { font-size: 12px; line-height: 1.5; color: var(--ink2); display: flex; align-items: flex-start; gap: 8px; }
+  .hist-todo-item.done { color: var(--ink3); text-decoration: line-through; }
+  .hist-badge-check { width: 14px; height: 14px; border-radius: 3px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; font-size: 10px; }
+  .hist-badge-check.done { background: var(--green-light); color: var(--green); border: 1px solid rgba(78,154,96,0.4); }
+  .hist-badge-check.undone { border: 1px solid var(--border); color: var(--ink3); }
 
   /* EDIT MODE inside card */
   .hcard-edit { padding: 16px 18px; display: none; flex-direction: column; gap: 14px; border-top: 1px solid var(--border2); background: var(--surface); }
@@ -122,7 +165,6 @@
   .td-date { white-space: nowrap; min-width: 110px; }
   .td-day { font-family: var(--serif); font-style: italic; font-size: 13px; display: block; color: var(--ink); }
   .td-datenum { font-size: 11px; color: var(--ink3); margin-top: 2px; display: block; }
-  .td-content { white-space: pre-wrap; }
   .td-actions { white-space: nowrap; text-align: right; min-width: 180px; }
 
   /* TABLE EDIT ROW */
@@ -131,7 +173,7 @@
   .edit-row td { padding: 0; border-bottom: 1px solid var(--border); }
   .edit-row-inner { padding: 16px 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .edit-row-inner label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink3); display: block; margin-bottom: 6px; }
-  .edit-row-inner textarea { min-height: 80px; font-size: 12px; }
+  .edit-row-inner textarea { min-height: 80px; font-size: 12px; width: 100%; border: 1px solid var(--border); border-radius: 6px; padding: 8px; font-family: var(--mono); }
   .edit-row-actions { padding: 0 14px 14px; display: flex; gap: 8px; justify-content: flex-end; }
 
   .btn-sm { font-family: var(--mono); font-size: 10px; letter-spacing: 0.05em; padding: 4px 10px; border-radius: 4px; border: 1px solid var(--border); background: var(--surface); color: var(--ink3); cursor: pointer; transition: all 0.15s; }
@@ -140,23 +182,25 @@
   .btn-sm-edit { color: var(--ink2); }
   .btn-sm-edit:hover { border-color: var(--ink); color: var(--ink); background: var(--surface2); }
   .btn-sm-save { background: var(--green); border-color: var(--green); color: #fff; }
-  .btn-sm-save:hover { background: #58a168; border-color: #58a168; color: #fff; }
+  .btn-sm-save:hover { background: #438753; border-color: #438753; color: #fff; }
   .btn-danger:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
 
   /* TOAST */
-  .toast { position: fixed; bottom: 28px; right: 28px; background: var(--ink); color: var(--surface); font-family: var(--mono); font-size: 12px; letter-spacing: 0.04em; padding: 10px 18px; border-radius: 6px; opacity: 0; transform: translateY(10px); transition: all 0.2s; pointer-events: none; z-index: 999; }
-  .toast.show { opacity: 1; transform: translateY(0); }
-
-  @media (max-width: 720px) {
-    .layout { grid-template-columns: 1fr; }
-    .sidebar { position: static; height: auto; padding: 20px 20px 12px; flex-direction: row; flex-wrap: wrap; align-items: center; border-right: none; border-bottom: 1px solid var(--border); }
-    .brand { margin-bottom: 0; margin-right: auto; }
-    .nav { flex-direction: row; margin-bottom: 0; }
-    .sidebar-date { display: none; }
-    .main { padding: 24px 20px; }
-    .hcard-body { grid-template-columns: 1fr; }
-    .edit-row-inner { grid-template-columns: 1fr; }
-  }
+  /* MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(26,23,20,0.5); backdrop-filter: blur(2px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
+  .modal-overlay.open { display: flex; animation: fadeUp 0.15s ease; }
+  .modal-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; max-width: 560px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: flex; flex-direction: column; }
+  .modal-head { padding: 16px 20px; border-bottom: 1px solid var(--border2); display: flex; justify-content: space-between; align-items: center; }
+  .modal-title { font-family: var(--serif); font-size: 20px; font-style: italic; color: var(--ink); }
+  .modal-close { background: none; border: none; font-size: 20px; color: var(--ink3); cursor: pointer; line-height: 1; padding: 0 4px; }
+  .modal-close:hover { color: var(--ink); }
+  .modal-body { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+  .modal-desc { font-size: 11px; color: var(--ink2); line-height: 1.6; }
+  .drop-zone { border: 2px dashed var(--border); border-radius: 8px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--surface2); }
+  .drop-zone:hover, .drop-zone.dragover { border-color: var(--ink); background: var(--surface); }
+  .drop-zone-text { font-size: 12px; color: var(--ink2); }
+  .drop-zone-sub { font-size: 10px; color: var(--ink3); margin-top: 4px; }
+  .modal-foot { padding: 14px 20px; border-top: 1px solid var(--border2); display: flex; justify-content: flex-end; gap: 8px; background: var(--surface2); border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; }
 </style>
 </head>
 <body>
@@ -181,6 +225,15 @@
       <div class="date-day" id="sidebarDay"></div>
       <div class="date-rest" id="sidebarRest"></div>
     </div>
+
+    <!-- DATA BACKUP / IMPORT & EXPORT -->
+    <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border2); display: flex; flex-direction: column; gap: 8px;">
+      <div style="font-size: 10px; color: var(--ink3); letter-spacing: 0.08em; text-transform: uppercase;">Data & Backup</div>
+      <div style="display: flex; gap: 6px;">
+        <button class="btn-sm" style="flex: 1; text-align: center;" onclick="openImportModal()">Upload JSON</button>
+        <button class="btn-sm" style="flex: 1; text-align: center;" onclick="exportDataJSON()">Export JSON</button>
+      </div>
+    </div>
   </aside>
 
   <main class="main">
@@ -191,20 +244,56 @@
       <div class="panel-subtitle" id="fullDate"></div>
 
       <div class="field-block">
-        <div class="field-label">Kemarin ngapain?</div>
-        <textarea id="yesterday" placeholder="Tulis satu item per baris&#10;Fix bug login page&#10;Review PR dari Andi&#10;Meeting product"></textarea>
+        <div class="field-header">
+          <div class="field-label">Kemarin ngapain?</div>
+          <span class="field-progress" id="yesterdayProgress">0/0 selesai</span>
+        </div>
+        <div class="todo-container">
+          <ul class="todo-list" id="yesterdayList"></ul>
+          <div class="todo-input-row">
+            <input type="text" class="todo-input" id="yesterdayInput" placeholder="+ Tambah tugas kemarin (tekan Enter)" onkeydown="handleInputKey(event, 'yesterday')">
+            <button class="btn btn-sm" onclick="addTodoFromInput('yesterday')">Tambah</button>
+          </div>
+        </div>
         <div class="copy-row">
           <button class="btn" onclick="copyFormat('yesterday','*')">Copy * bullet</button>
           <button class="btn" onclick="copyFormat('yesterday','-')">Copy — dash</button>
+          <button class="btn" onclick="copyFormat('yesterday','[x]')">Copy [x] todo</button>
+          <button class="bulk-toggle-btn" onclick="toggleBulk('yesterday')">Mode teks massal</button>
+        </div>
+        <div class="bulk-box" id="bulk-yesterday">
+          <textarea class="bulk-textarea" id="bulkText-yesterday" placeholder="Tulis satu item per baris..."></textarea>
+          <div style="display:flex; gap:6px; justify-content:flex-end;">
+            <button class="btn btn-green btn-sm" onclick="applyBulk('yesterday')">Terapkan ke list</button>
+            <button class="btn btn-sm" onclick="toggleBulk('yesterday')">Tutup</button>
+          </div>
         </div>
       </div>
 
       <div class="field-block">
-        <div class="field-label">Hari ini mau ngapain?</div>
-        <textarea id="today" placeholder="Tulis satu item per baris&#10;Implement fitur notifikasi&#10;Sprint planning 10.00&#10;Code review"></textarea>
+        <div class="field-header">
+          <div class="field-label">Hari ini mau ngapain?</div>
+          <span class="field-progress" id="todayProgress">0/0 selesai</span>
+        </div>
+        <div class="todo-container">
+          <ul class="todo-list" id="todayList"></ul>
+          <div class="todo-input-row">
+            <input type="text" class="todo-input" id="todayInput" placeholder="+ Tambah tugas hari ini (tekan Enter)" onkeydown="handleInputKey(event, 'today')">
+            <button class="btn btn-sm" onclick="addTodoFromInput('today')">Tambah</button>
+          </div>
+        </div>
         <div class="copy-row">
           <button class="btn" onclick="copyFormat('today','*')">Copy * bullet</button>
           <button class="btn" onclick="copyFormat('today','-')">Copy — dash</button>
+          <button class="btn" onclick="copyFormat('today','[x]')">Copy [x] todo</button>
+          <button class="bulk-toggle-btn" onclick="toggleBulk('today')">Mode teks massal</button>
+        </div>
+        <div class="bulk-box" id="bulk-today">
+          <textarea class="bulk-textarea" id="bulkText-today" placeholder="Tulis satu item per baris..."></textarea>
+          <div style="display:flex; gap:6px; justify-content:flex-end;">
+            <button class="btn btn-green btn-sm" onclick="applyBulk('today')">Terapkan ke list</button>
+            <button class="btn btn-sm" onclick="toggleBulk('today')">Tutup</button>
+          </div>
         </div>
       </div>
 
@@ -235,9 +324,35 @@
 
 <div class="toast" id="toast"></div>
 
+<!-- IMPORT / UPLOAD MODAL -->
+<div class="modal-overlay" id="importModal" onclick="if(event.target===this)closeImportModal()">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div class="modal-title">Upload / Import Data JSON</div>
+      <button class="modal-close" onclick="closeImportModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-desc">
+        Kamu bisa mengunggah file <code>.json</code> atau menempelkan (paste) data JSON / LocalStorage dump ke textarea berikut.
+      </div>
+      
+      <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+        <input type="file" id="fileInput" accept=".json,application/json,text/plain" style="display:none" onchange="handleFileSelect(event)">
+        <div class="drop-zone-text">📂 Klik untuk pilih file .json atau drag & drop ke sini</div>
+        <div class="drop-zone-sub">Mendukung file JSON format history / dump localStorage</div>
+      </div>
+
+      <div style="font-size: 10px; color: var(--ink3); letter-spacing: 0.08em; text-transform: uppercase;">Atau Paste Kode JSON / Teks:</div>
+      <textarea id="jsonPasteText" style="min-height: 120px; font-size: 11px;" placeholder='Paste JSON array [{"date":"...","yesterday":"...","today":"..."}] atau key-value dump di sini'></textarea>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeImportModal()">Batal</button>
+      <button class="btn btn-accent" onclick="processImportJSON()">Import Data</button>
+    </div>
+  </div>
+</div>
+
 <script>
-  const yesterdayEl = document.getElementById('yesterday');
-  const todayEl = document.getElementById('today');
   const now = new Date();
   const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
   const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
@@ -247,56 +362,239 @@
   document.getElementById('sidebarRest').textContent = days[now.getDay()] + ' · ' + months[now.getMonth()] + ' ' + now.getFullYear();
   document.getElementById('fullDate').textContent = days[now.getDay()] + ', ' + now.getDate() + ' ' + monthsFull[now.getMonth()] + ' ' + now.getFullYear();
 
-  yesterdayEl.value = localStorage.getItem('zam_yesterday') || '';
-  todayEl.value = localStorage.getItem('zam_today') || '';
+  // Parse items from storage supporting both new [{text, done}] format and old string format
+  function parseInitialItems(key) {
+    const raw = localStorage.getItem(key);
+    if (!raw) return [];
+    try {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        return parsed.map(item => {
+          if (typeof item === 'string') return { text: item, done: false };
+          return { text: item.text || '', done: !!item.done };
+        }).filter(item => item.text.trim());
+      }
+    } catch (e) {
+      // If legacy plain multiline text
+      return raw.split('\n').map(l => l.trim()).filter(Boolean).map(text => ({ text, done: false }));
+    }
+    return [];
+  }
+
+  let state = {
+    yesterday: parseInitialItems('zam_yesterday_todos') || parseInitialItems('zam_yesterday'),
+    today: parseInitialItems('zam_today_todos') || parseInitialItems('zam_today')
+  };
 
   function autoSave() {
-    localStorage.setItem('zam_yesterday', yesterdayEl.value);
-    localStorage.setItem('zam_today', todayEl.value);
+    localStorage.setItem('zam_yesterday_todos', JSON.stringify(state.yesterday));
+    localStorage.setItem('zam_today_todos', JSON.stringify(state.today));
+    // backward compat fallback
+    localStorage.setItem('zam_yesterday', state.yesterday.map(i => (i.done ? '[x] ' : '') + i.text).join('\n'));
+    localStorage.setItem('zam_today', state.today.map(i => (i.done ? '[x] ' : '') + i.text).join('\n'));
     const t = new Date();
     document.getElementById('saveNote').textContent = 'Disimpan ' + String(t.getHours()).padStart(2,'0') + ':' + String(t.getMinutes()).padStart(2,'0');
   }
-  yesterdayEl.addEventListener('input', autoSave);
-  todayEl.addEventListener('input', autoSave);
 
-  function fmtLines(text, prefix) {
-    return text.split('\n').map(l => l.trim()).filter(l => l)
-      .map(l => prefix + ' ' + l.replace(/^[*\-]\s*/, '')).join('\n');
+  function renderTodoList(type) {
+    const listEl = document.getElementById(type + 'List');
+    const items = state[type];
+    const total = items.length;
+    const doneCount = items.filter(i => i.done).length;
+    
+    // update progress counter
+    const progEl = document.getElementById(type + 'Progress');
+    if (progEl) {
+      progEl.textContent = `${doneCount}/${total} selesai`;
+      progEl.classList.toggle('all-done', total > 0 && doneCount === total);
+    }
+
+    if (!items.length) {
+      listEl.innerHTML = '<li class="todo-empty-state">Belum ada item tugas. Ketik di bawah lalu tekan Enter.</li>';
+      return;
+    }
+
+    listEl.innerHTML = items.map((item, idx) => `
+      <li class="todo-item ${item.done ? 'done' : ''}" data-idx="${idx}">
+        <div class="todo-checkbox-wrapper" onclick="toggleTodo('${type}', ${idx})">
+          <div class="todo-check">
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 6l3 3 5-5"/></svg>
+          </div>
+        </div>
+        <span class="todo-text" contenteditable="true" spellcheck="false" 
+              onblur="updateTodoText('${type}', ${idx}, this.innerText)" 
+              onkeydown="handleTodoItemKey(event, '${type}', ${idx}, this)">${escHtml(item.text)}</span>
+        <button class="todo-del-btn" title="Hapus item" onclick="deleteTodo('${type}', ${idx})">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/></svg>
+        </button>
+      </li>
+    `).join('');
   }
 
-  function copyFormat(id, prefix) {
-    const text = document.getElementById(id).value;
-    if (!text.trim()) { showToast('Isi dulu yuk!'); return; }
-    navigator.clipboard.writeText(fmtLines(text, prefix)).then(() => showToast('Berhasil dicopy!'));
+  function handleInputKey(e, type) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      addTodoFromInput(type);
+    }
+  }
+
+  function handleTodoItemKey(e, type, idx, el) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      el.blur();
+    }
+  }
+
+  function addTodoFromInput(type) {
+    const input = document.getElementById(type + 'Input');
+    const val = input.value.trim();
+    if (!val) return;
+    state[type].push({ text: val, done: false });
+    input.value = '';
+    renderTodoList(type);
+    autoSave();
+  }
+
+  function toggleTodo(type, idx) {
+    if (state[type][idx]) {
+      state[type][idx].done = !state[type][idx].done;
+      renderTodoList(type);
+      autoSave();
+    }
+  }
+
+  function updateTodoText(type, idx, newText) {
+    const clean = newText.trim();
+    if (!clean) {
+      deleteTodo(type, idx);
+      return;
+    }
+    if (state[type][idx]) {
+      state[type][idx].text = clean;
+      renderTodoList(type);
+      autoSave();
+    }
+  }
+
+  function deleteTodo(type, idx) {
+    state[type].splice(idx, 1);
+    renderTodoList(type);
+    autoSave();
+  }
+
+  // Bulk Edit / Mode teks massal
+  function toggleBulk(type) {
+    const box = document.getElementById('bulk-' + type);
+    const isOpen = box.classList.toggle('open');
+    if (isOpen) {
+      const textarea = document.getElementById('bulkText-' + type);
+      textarea.value = state[type].map(i => (i.done ? '[x] ' : '') + i.text).join('\n');
+      textarea.focus();
+    }
+  }
+
+  function applyBulk(type) {
+    const textarea = document.getElementById('bulkText-' + type);
+    const lines = textarea.value.split('\n').map(l => l.trim()).filter(Boolean);
+    state[type] = lines.map(line => {
+      const isDone = /^\[x\]/i.test(line);
+      const text = line.replace(/^[*\-\[\]x\s]+/, '').trim() || line;
+      return { text, done: isDone };
+    });
+    toggleBulk(type);
+    renderTodoList(type);
+    autoSave();
+    showToast('List diperbarui!');
+  }
+
+  function fmtLines(items, prefix) {
+    if (!items || !items.length) return '';
+    return items.map(item => {
+      const text = (typeof item === 'string' ? item : item.text).replace(/^[*\-]\s*/, '').replace(/^\[[ x]\]\s*/i, '');
+      const isDone = typeof item === 'object' ? item.done : false;
+      if (prefix === '[x]') {
+        return (isDone ? '[x] ' : '[ ] ') + text;
+      }
+      return (prefix ? prefix + ' ' : '') + (isDone ? '[Selesai] ' : '') + text;
+    }).join('\n');
+  }
+
+  function copyFormat(type, prefix) {
+    const items = state[type];
+    if (!items.length) { showToast('Isi dulu list-nya yuk!'); return; }
+    const formatted = fmtLines(items, prefix);
+    navigator.clipboard.writeText(formatted).then(() => showToast('Berhasil dicopy!'));
   }
 
   function getDateKey() { return now.toISOString().slice(0,10); }
   function getDateStr() { return days[now.getDay()] + ', ' + now.getDate() + ' ' + monthsFull[now.getMonth()] + ' ' + now.getFullYear(); }
 
-  function getHist() { return JSON.parse(localStorage.getItem('zam_history') || '[]'); }
+  function normalizeHistItems(data) {
+    if (!data) return [];
+    if (Array.isArray(data)) {
+      return data.map(i => typeof i === 'string' ? { text: i, done: false } : { text: i.text || '', done: !!i.done });
+    }
+    if (typeof data === 'string') {
+      return data.split('\n').map(l => l.trim()).filter(Boolean).map(l => {
+        const isDone = /^\[x\]/i.test(l);
+        const text = l.replace(/^\[[ x]\]\s*/i, '').replace(/^[*\-]\s*/, '').trim();
+        return { text: text || l, done: isDone };
+      });
+    }
+    return [];
+  }
+
+  function getHist() { 
+    const raw = JSON.parse(localStorage.getItem('zam_history') || '[]');
+    return raw.map(h => ({
+      ...h,
+      yesterdayItems: normalizeHistItems(h.yesterdayItems || h.yesterday),
+      todayItems: normalizeHistItems(h.todayItems || h.today)
+    }));
+  }
   function saveHist(h) { localStorage.setItem('zam_history', JSON.stringify(h)); }
 
   function saveToHistory() {
-    const y = yesterdayEl.value.trim();
-    const t = todayEl.value.trim();
-    if (!y && !t) { showToast('Belum ada yang diisi!'); return; }
+    const yItems = state.yesterday;
+    const tItems = state.today;
+    if (!yItems.length && !tItems.length) { showToast('Belum ada yang diisi!'); return; }
     const hist = getHist();
     const dateKey = getDateKey();
     const idx = hist.findIndex(h => h.date === dateKey);
-    const entry = { date: dateKey, dateStr: getDateStr(), yesterday: y, today: t };
+    const entry = { 
+      date: dateKey, 
+      dateStr: getDateStr(), 
+      yesterdayItems: JSON.parse(JSON.stringify(yItems)), 
+      todayItems: JSON.parse(JSON.stringify(tItems)),
+      yesterday: fmtLines(yItems, '*'),
+      today: fmtLines(tItems, '*')
+    };
     if (idx >= 0) hist[idx] = entry; else hist.unshift(entry);
     hist.splice(60);
     saveHist(hist);
     showToast('Tersimpan ke history!');
   }
 
-  // ── EDIT FUNCTIONS ──────────────────────────────────
-  function saveEdit(dateKey, newY, newT) {
+  // ── EDIT FUNCTIONS (HISTORY) ─────────────────────────
+  function saveEdit(dateKey, newYText, newTText) {
     const hist = getHist();
     const idx = hist.findIndex(h => h.date === dateKey);
     if (idx < 0) return;
-    hist[idx].yesterday = newY.trim();
-    hist[idx].today = newT.trim();
+
+    const parseLines = (text) => text.split('\n').map(l => l.trim()).filter(Boolean).map(l => {
+      const isDone = /^\[x\]/i.test(l);
+      const clean = l.replace(/^\[[ x]\]\s*/i, '').replace(/^[*\-]\s*/, '').trim();
+      return { text: clean || l, done: isDone };
+    });
+
+    const newYItems = parseLines(newYText);
+    const newTItems = parseLines(newTText);
+
+    hist[idx].yesterdayItems = newYItems;
+    hist[idx].todayItems = newTItems;
+    hist[idx].yesterday = fmtLines(newYItems, '*');
+    hist[idx].today = fmtLines(newTItems, '*');
+    
     saveHist(hist);
     showToast('Perubahan disimpan!');
     loadHistory();
@@ -325,15 +623,34 @@
     else renderCards(container, hist);
   }
 
-  function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g, '&quot;'); }
+
+  function renderHistItemList(items) {
+    if (!items || !items.length) return '<span style="color:var(--ink3)">—</span>';
+    return '<ul class="hist-todo-list">' + items.map(item => `
+      <li class="hist-todo-item ${item.done ? 'done' : ''}">
+        <span class="hist-badge-check ${item.done ? 'done' : 'undone'}">${item.done ? '✓' : '○'}</span>
+        <span>${escHtml(item.text)}</span>
+      </li>
+    `).join('') + '</ul>';
+  }
 
   // ── CARD VIEW ────────────────────────────────────────
   function renderCards(container, hist) {
     container.innerHTML = '<div class="history-grid">' + hist.map(h => {
-      const yFmt = h.yesterday ? escHtml(fmtLines(h.yesterday,'*')) : '<span style="color:var(--ink3)">—</span>';
-      const tFmt = h.today ? escHtml(fmtLines(h.today,'*')) : '<span style="color:var(--ink3)">—</span>';
+      const yHtml = renderHistItemList(h.yesterdayItems);
+      const tHtml = renderHistItemList(h.todayItems);
       const parts = h.dateStr.split(',');
       const isEditing = openEditKey === h.date;
+      
+      const yRawVal = (h.yesterdayItems || []).map(i => (i.done ? '[x] ' : '') + i.text).join('\n');
+      const tRawVal = (h.todayItems || []).map(i => (i.done ? '[x] ' : '') + i.text).join('\n');
+
+      const yDone = (h.yesterdayItems||[]).filter(i=>i.done).length;
+      const yTot = (h.yesterdayItems||[]).length;
+      const tDone = (h.todayItems||[]).filter(i=>i.done).length;
+      const tTot = (h.todayItems||[]).length;
+
       return `<div class="history-card" id="card-${h.date}">
         <div class="hcard-head">
           <div>
@@ -343,22 +660,34 @@
           <div class="hcard-actions">
             <button class="btn-sm btn-sm-edit" onclick="toggleCardEdit('${h.date}')" id="editbtn-${h.date}">${isEditing ? 'Batal' : 'Edit'}</button>
             <button class="btn-sm" onclick="copyEntry('${h.date}','*')">Copy *</button>
-            <button class="btn-sm" onclick="copyEntry('${h.date}','-')">Copy -</button>
+            <button class="btn-sm" onclick="copyEntry('${h.date}','[x]')">Copy [x]</button>
             <button class="btn-sm btn-danger" onclick="deleteEntry('${h.date}')">Hapus</button>
           </div>
         </div>
         <div class="hcard-body" id="cardbody-${h.date}" style="${isEditing ? 'display:none' : ''}">
-          <div><div class="hcard-section-label">Kemarin</div><div class="hcard-content">${yFmt}</div></div>
-          <div><div class="hcard-section-label">Hari itu</div><div class="hcard-content">${tFmt}</div></div>
+          <div>
+            <div class="hcard-section-label">
+              <span>Kemarin</span>
+              ${yTot > 0 ? `<span style="font-size:9px">${yDone}/${yTot} selesai</span>` : ''}
+            </div>
+            ${yHtml}
+          </div>
+          <div>
+            <div class="hcard-section-label">
+              <span>Hari itu</span>
+              ${tTot > 0 ? `<span style="font-size:9px">${tDone}/${tTot} selesai</span>` : ''}
+            </div>
+            ${tHtml}
+          </div>
         </div>
         <div class="hcard-edit ${isEditing ? 'open' : ''}" id="cardedit-${h.date}">
           <div>
-            <div class="hcard-edit-label">Kemarin</div>
-            <textarea id="editY-${h.date}" placeholder="Kemarin ngapain...">${escHtml(h.yesterday||'')}</textarea>
+            <div class="hcard-edit-label">Kemarin (awali baris dengan [x] jika selesai)</div>
+            <textarea id="editY-${h.date}" placeholder="Kemarin ngapain...">${escHtml(yRawVal)}</textarea>
           </div>
           <div>
-            <div class="hcard-edit-label">Hari itu</div>
-            <textarea id="editT-${h.date}" placeholder="Hari itu ngapain...">${escHtml(h.today||'')}</textarea>
+            <div class="hcard-edit-label">Hari itu (awali baris dengan [x] jika selesai)</div>
+            <textarea id="editT-${h.date}" placeholder="Hari itu ngapain...">${escHtml(tRawVal)}</textarea>
           </div>
           <div class="hcard-edit-actions">
             <button class="btn btn-green" style="font-size:11px;padding:6px 14px" onclick="submitCardEdit('${h.date}')">Simpan perubahan</button>
@@ -370,11 +699,7 @@
   }
 
   function toggleCardEdit(dateKey) {
-    if (openEditKey === dateKey) {
-      openEditKey = null;
-    } else {
-      openEditKey = dateKey;
-    }
+    openEditKey = openEditKey === dateKey ? null : dateKey;
     loadHistory();
   }
 
@@ -391,21 +716,24 @@
       const parts = h.dateStr.split(',');
       const dayPart = parts[0] || '';
       const datePart = (parts[1] || '').trim();
-      const yFmt = h.yesterday ? escHtml(fmtLines(h.yesterday,'*')) : '<span style="color:var(--ink3)">—</span>';
-      const tFmt = h.today ? escHtml(fmtLines(h.today,'*')) : '<span style="color:var(--ink3)">—</span>';
+      const yHtml = renderHistItemList(h.yesterdayItems);
+      const tHtml = renderHistItemList(h.todayItems);
       const isEditing = openEditKey === h.date;
+
+      const yRawVal = (h.yesterdayItems || []).map(i => (i.done ? '[x] ' : '') + i.text).join('\n');
+      const tRawVal = (h.todayItems || []).map(i => (i.done ? '[x] ' : '') + i.text).join('\n');
 
       const viewRow = `<tr class="view-row" id="viewrow-${h.date}">
         <td class="td-date">
           <span class="td-day">${dayPart}</span>
           <span class="td-datenum">${datePart}</span>
         </td>
-        <td class="td-content">${yFmt}</td>
-        <td class="td-content">${tFmt}</td>
+        <td>${yHtml}</td>
+        <td>${tHtml}</td>
         <td class="td-actions">
           <button class="btn-sm btn-sm-edit" onclick="toggleTableEdit('${h.date}')">${isEditing ? 'Batal' : 'Edit'}</button>
           <button class="btn-sm" onclick="copyEntry('${h.date}','*')">Copy *</button>
-          <button class="btn-sm" onclick="copyEntry('${h.date}','-')">Copy -</button>
+          <button class="btn-sm" onclick="copyEntry('${h.date}','[x]')">Copy [x]</button>
           <button class="btn-sm btn-danger" onclick="deleteEntry('${h.date}')">Hapus</button>
         </td>
       </tr>`;
@@ -414,12 +742,12 @@
         <td colspan="4">
           <div class="edit-row-inner">
             <div>
-              <label>Kemarin</label>
-              <textarea id="tblEditY-${h.date}" placeholder="Kemarin ngapain...">${escHtml(h.yesterday||'')}</textarea>
+              <label>Kemarin (tulis [x] di awal baris bila selesai)</label>
+              <textarea id="tblEditY-${h.date}" placeholder="Kemarin ngapain...">${escHtml(yRawVal)}</textarea>
             </div>
             <div>
-              <label>Hari itu</label>
-              <textarea id="tblEditT-${h.date}" placeholder="Hari itu ngapain...">${escHtml(h.today||'')}</textarea>
+              <label>Hari itu (tulis [x] di awal baris bila selesai)</label>
+              <textarea id="tblEditT-${h.date}" placeholder="Hari itu ngapain...">${escHtml(tRawVal)}</textarea>
             </div>
           </div>
           <div class="edit-row-actions">
@@ -475,8 +803,8 @@
     const h = hist.find(e => e.date === dateKey);
     if (!h) return;
     let out = h.dateStr + '\n\n';
-    if (h.yesterday) out += 'Kemarin:\n' + fmtLines(h.yesterday, prefix) + '\n\n';
-    if (h.today) out += 'Hari itu:\n' + fmtLines(h.today, prefix);
+    if (h.yesterdayItems && h.yesterdayItems.length) out += 'Kemarin:\n' + fmtLines(h.yesterdayItems, prefix) + '\n\n';
+    if (h.todayItems && h.todayItems.length) out += 'Hari itu:\n' + fmtLines(h.todayItems, prefix);
     navigator.clipboard.writeText(out.trim()).then(() => showToast('Dicopy dengan format ' + prefix));
   }
 
@@ -493,6 +821,216 @@
     t.classList.add('show');
     clearTimeout(t._t);
     t._t = setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  // Initial load
+  renderTodoList('yesterday');
+  renderTodoList('today');
+
+  // ── IMPORT & EXPORT JSON ─────────────────────────────
+  function openImportModal() {
+    document.getElementById('importModal').classList.add('open');
+    document.getElementById('jsonPasteText').value = '';
+    setupDropZone();
+  }
+
+  function closeImportModal() {
+    document.getElementById('importModal').classList.remove('open');
+  }
+
+  function setupDropZone() {
+    const dz = document.getElementById('dropZone');
+    ['dragenter', 'dragover'].forEach(name => {
+      dz.addEventListener(name, (e) => { e.preventDefault(); dz.classList.add('dragover'); }, false);
+    });
+    ['dragleave', 'drop'].forEach(name => {
+      dz.addEventListener(name, (e) => { e.preventDefault(); dz.classList.remove('dragover'); }, false);
+    });
+    dz.addEventListener('drop', (e) => {
+      const files = e.dataTransfer.files;
+      if (files && files.length) readFileContent(files[0]);
+    }, false);
+  }
+
+  function handleFileSelect(e) {
+    const file = e.target.files && e.target.files[0];
+    if (file) readFileContent(file);
+  }
+
+  function readFileContent(file) {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      document.getElementById('jsonPasteText').value = event.target.result;
+    };
+    reader.readAsText(file);
+  }
+
+  function processImportJSON() {
+    const raw = document.getElementById('jsonPasteText').value.trim();
+    if (!raw) {
+      showToast('Tempelkan JSON atau pilih file dulu ya!');
+      return;
+    }
+
+    let parsed = null;
+    let importedHist = [];
+    let updatedToday = null;
+    let updatedYesterday = null;
+
+    // 1. Direct JSON parse
+    try {
+      parsed = JSON.parse(raw);
+    } catch (e) {}
+
+    // 2. If direct parse failed or parsed object is not regular array, try finding JSON array inside text
+    if (!parsed) {
+      // Find `[...]` block
+      const firstBracket = raw.indexOf('[');
+      const lastBracket = raw.lastIndexOf(']');
+      if (firstBracket !== -1 && lastBracket !== -1 && lastBracket > firstBracket) {
+        try {
+          const jsonArrStr = raw.substring(firstBracket, lastBracket + 1);
+          const tryArr = JSON.parse(jsonArrStr);
+          if (Array.isArray(tryArr)) {
+            importedHist = tryArr;
+          }
+        } catch (err) {
+          // JSON array might have trailing unclosed quotes/objects from copy truncate, try repairing or continuing
+          console.warn('Array parse error:', err);
+        }
+      }
+
+      // Check for `zam_today` and `zam_yesterday` lines in raw text
+      const todayMatch = raw.match(/zam_today\s*[\t:\-]\s*([\s\S]*?)(?=(?:zam_yesterday|zam_history|am_history|$))/i);
+      if (todayMatch && todayMatch[1]) {
+        updatedToday = todayMatch[1].trim();
+      }
+
+      const yesterdayMatch = raw.match(/zam_yesterday\s*[\t:\-]\s*([\s\S]*?)(?=(?:zam_today|zam_history|am_history|$))/i);
+      if (yesterdayMatch && yesterdayMatch[1]) {
+        updatedYesterday = yesterdayMatch[1].trim();
+      }
+    } else {
+      // Parsed successfully
+      if (Array.isArray(parsed)) {
+        importedHist = parsed;
+      } else if (typeof parsed === 'object') {
+        if (Array.isArray(parsed.zam_history || parsed.history)) {
+          importedHist = parsed.zam_history || parsed.history;
+        }
+        if (parsed.zam_today || parsed.today) {
+          updatedToday = parsed.zam_today || parsed.today;
+        }
+        if (parsed.zam_yesterday || parsed.yesterday) {
+          updatedYesterday = parsed.zam_yesterday || parsed.yesterday;
+        }
+      }
+    }
+
+    // Special case for truncated JSON array (e.g. from copy-paste length limit)
+    if (!importedHist.length && (raw.includes('"date"') || raw.includes('dateStr'))) {
+      try {
+        const objMatches = raw.match(/\{[^{}]*"date"[^{}]*\}/g);
+        if (objMatches && objMatches.length) {
+          importedHist = objMatches.map(str => {
+            try { return JSON.parse(str); } catch(e) { return null; }
+          }).filter(Boolean);
+        }
+      } catch(e){}
+    }
+
+    if (!importedHist.length && !updatedToday && !updatedYesterday) {
+      alert('Data tidak berhasil di-parse. Pastikan format JSON benar atau salin array JSON history-nya.');
+      return;
+    }
+
+    // Merge or update history
+    let successCount = 0;
+    if (importedHist.length) {
+      let currentHist = getHist();
+      importedHist.forEach(item => {
+        if (!item || !item.date) return;
+        const normalized = {
+          date: item.date,
+          dateStr: item.dateStr || item.date,
+          yesterdayItems: normalizeHistItems(item.yesterdayItems || item.yesterday),
+          todayItems: normalizeHistItems(item.todayItems || item.today),
+          yesterday: typeof item.yesterday === 'string' ? item.yesterday : fmtLines(normalizeHistItems(item.yesterdayItems || item.yesterday), '*'),
+          today: typeof item.today === 'string' ? item.today : fmtLines(normalizeHistItems(item.todayItems || item.today), '*')
+        };
+        const existingIdx = currentHist.findIndex(h => h.date === item.date);
+        if (existingIdx >= 0) {
+          currentHist[existingIdx] = normalized;
+        } else {
+          currentHist.push(normalized);
+        }
+        successCount++;
+      });
+
+      // Sort by date descending
+      currentHist.sort((a,b) => (b.date || '').localeCompare(a.date || ''));
+      saveHist(currentHist);
+    }
+
+    // Update today / yesterday if provided
+    if (updatedToday) {
+      // Split by newline or if formatted like "- item 1 - item 2"
+      let items = [];
+      if (typeof updatedToday === 'string') {
+        if (updatedToday.includes('\n')) {
+          items = normalizeHistItems(updatedToday);
+        } else if (updatedToday.includes(' - ')) {
+          items = updatedToday.split(/\s+-\s+/).map(t => t.trim()).filter(Boolean).map(text => ({ text: text.replace(/^-\s*/, ''), done: false }));
+        } else {
+          items = normalizeHistItems(updatedToday);
+        }
+      } else {
+        items = normalizeHistItems(updatedToday);
+      }
+      if (items.length) state.today = items;
+    }
+
+    if (updatedYesterday) {
+      let items = [];
+      if (typeof updatedYesterday === 'string') {
+        if (updatedYesterday.includes('\n')) {
+          items = normalizeHistItems(updatedYesterday);
+        } else if (updatedYesterday.includes(' - ')) {
+          items = updatedYesterday.split(/\s+-\s+/).map(t => t.trim()).filter(Boolean).map(text => ({ text: text.replace(/^-\s*/, ''), done: false }));
+        } else {
+          items = normalizeHistItems(updatedYesterday);
+        }
+      } else {
+        items = normalizeHistItems(updatedYesterday);
+      }
+      if (items.length) state.yesterday = items;
+    }
+
+    autoSave();
+    renderTodoList('yesterday');
+    renderTodoList('today');
+    loadHistory();
+    closeImportModal();
+    showToast(`Sukses mengimpor ${successCount} data history!`);
+  }
+
+  function exportDataJSON() {
+    const data = {
+      exportedAt: new Date().toISOString(),
+      zam_yesterday: state.yesterday,
+      zam_today: state.today,
+      zam_history: getHist()
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `scrum-backup-${getDateKey()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('Data berhasil diexport!');
   }
 </script>
 </body>
